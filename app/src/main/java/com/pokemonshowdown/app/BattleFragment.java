@@ -1415,6 +1415,42 @@ public class BattleFragment extends Fragment {
         }
     }
 
+    public void clearnegativeBoost(String playerTag) {
+        try {
+            LinearLayout tempStat = (LinearLayout) getView().findViewById(getTempStatusId(playerTag));
+            for (String stat : STATS) {
+                TextView statBoost = (TextView) tempStat.findViewWithTag(stat);
+                if (statBoost != null) {
+                    String boostDetail = statBoost.getText().toString();
+                    int currentBoost = Integer.parseInt(boostDetail.substring(0, boostDetail.indexOf(" ")));
+                    if (currentBoost < 0) {
+                        tempStat.removeView(statBoost);
+                    }
+                }
+            }
+        } catch (NullPointerException e) {
+
+        }
+    }
+
+    public void clearpositiveBoost(String playerTag) {
+        try {
+            LinearLayout tempStat = (LinearLayout) getView().findViewById(getTempStatusId(playerTag));
+            for (String stat : STATS) {
+                TextView statBoost = (TextView) tempStat.findViewWithTag(stat);
+                if (statBoost != null) {
+                    String boostDetail = statBoost.getText().toString();
+                    int currentBoost = Integer.parseInt(boostDetail.substring(0, boostDetail.indexOf(" ")));
+                    if (currentBoost > 0) {
+                        tempStat.removeView(statBoost);
+                    }
+                }
+            }
+        } catch (NullPointerException e) {
+
+        }
+    }
+
     public void swapBoost(String org, String dest, String... stats) {
         org = org.substring(0, 3);
         dest = dest.substring(0, 3);
@@ -1779,9 +1815,53 @@ public class BattleFragment extends Fragment {
                 } else {
                     movePps[i].setText(moveJson.optString("pp", "0"));
                 }
+
+                String type = MoveDex.get(getContext()).getMoveJsonObject(moveJson.getString("id")).getString("type");
+
                 int typeIcon = MoveDex.getMoveTypeIcon(getActivity(), moveJson.getString("id"));
+
                 moveIcons[i].setImageResource(typeIcon);
                 moveViews[i].setOnClickListener(parseMoveTarget(active, isZMove, i));
+
+
+                String ability = getCurrentActivePokemon().getAbilityName(getContext());
+
+                // Account for all different move-type variations
+                if (moveJson.getString("move").contains("Hidden Power")) {
+                    moveViews[i].setBackgroundResource(getMoveBackground(moveJson.getString("move").substring(13)));
+                    moveIcons[i].setImageResource(getMoveIcon(moveJson.getString("move").substring(13)));
+                } else if (moveJson.getString("move").contains("Judgment") && getCurrentActivePokemon().getName()
+                        .contains("Arceus") && getCurrentActivePokemon().getItemName(getContext()).contains("Plate")) {
+                    String arceus = getCurrentActivePokemon().getName().substring(7, getCurrentActivePokemon().getName().length());
+                    moveViews[i].setBackgroundResource(getMoveBackground(arceus));
+                    moveIcons[i].setImageResource(getMoveIcon(arceus.toLowerCase()));
+                } else if (type.equals("Normal") && ability.equals("Aerilate") || ability.equals("Pixilate") || ability.equals("Galvanize") ||
+                        ability.equals("Refrigerate")) {
+                    switch (ability) {
+                        case "Aerilate":
+                            moveViews[i].setBackgroundResource(getMoveBackground("flying"));
+                            moveIcons[i].setImageResource(getMoveIcon("flying"));
+                            break;
+                        case "Pixilate":
+                            moveViews[i].setBackgroundResource(getMoveBackground("fairy"));
+                            moveIcons[i].setImageResource(getMoveIcon("fairy"));
+                            break;
+                        case "Galvanize":
+                            moveViews[i].setBackgroundResource(getMoveBackground("electric"));
+                            moveIcons[i].setImageResource(getMoveIcon("electric"));
+                            break;
+                        case "Refrigerate":
+                            moveViews[i].setBackgroundResource(getMoveBackground("ice"));
+                            moveIcons[i].setImageResource(getMoveIcon("ice"));
+                            break;
+                    }
+                } else if (ability.equals("Normalize")) {
+                    moveViews[i].setBackgroundResource(getMoveBackground("normal"));
+                    moveIcons[i].setImageResource(getMoveIcon("normal"));
+                } else {
+                    moveViews[i].setBackgroundResource(getMoveBackground(type));
+                }
+
                 if (moveJson.optBoolean("disabled", false)) {
                     moveViews[i].setOnClickListener(null);
                     moveViews[i].setBackgroundResource(R.drawable.uneditable_frame);
@@ -1789,8 +1869,134 @@ public class BattleFragment extends Fragment {
             }
         }
 
-
     }
+
+    private int getMoveIcon(String type) {
+        int res = 0;
+
+        switch (type.toLowerCase()) {
+            case "bug":
+                res = R.drawable.types_bug;
+                break;
+            case "dark":
+                res = R.drawable.types_dark;
+                break;
+            case "dragon":
+                res = R.drawable.types_dragon;
+                break;
+            case "electric":
+                res = R.drawable.types_electric;
+                break;
+            case "fairy":
+                res = R.drawable.types_fairy;
+                break;
+            case "fighting":
+                res = R.drawable.types_fighting;
+                break;
+            case "fire":
+                res = R.drawable.types_fire;
+                break;
+            case "flying":
+                res = R.drawable.types_flying;
+                break;
+            case "ghost":
+                res = R.drawable.types_ghost;
+                break;
+            case "grass":
+                res = R.drawable.types_grass;
+                break;
+            case "ground":
+                res = R.drawable.types_ground;
+                break;
+            case "ice":
+                res = R.drawable.types_ice;
+                break;
+            case "normal":
+                res = R.drawable.types_normal;
+                break;
+            case "poison":
+                res = R.drawable.types_poison;
+                break;
+            case "psychic":
+                res = R.drawable.types_psychic;
+                break;
+            case "rock":
+                res = R.drawable.types_rock;
+                break;
+            case "steel":
+                res = R.drawable.types_steel;
+                break;
+            case "water":
+                res = R.drawable.types_water;
+                break;
+        }
+
+        return res;
+    }
+
+    private int getMoveBackground(String type) {
+        int res = 0;
+
+        switch (type.toLowerCase()) {
+            case "bug":
+                res = R.drawable.button_attack_bug;
+                break;
+            case "dark":
+                res = R.drawable.button_attack_dark;
+                break;
+            case "dragon":
+                res = R.drawable.button_attack_dragon;
+                break;
+            case "electric":
+                res = R.drawable.button_attack_electric;
+                break;
+            case "fairy":
+                res = R.drawable.button_attack_fairy;
+                break;
+            case "fighting":
+                res = R.drawable.button_attack_fighting;
+                break;
+            case "fire":
+                res = R.drawable.button_attack_fire;
+                break;
+            case "flying":
+                res = R.drawable.button_attack_flying;
+                break;
+            case "ghost":
+                res = R.drawable.button_attack_ghost;
+                break;
+            case "grass":
+                res = R.drawable.button_attack_grass;
+                break;
+            case "ground":
+                res = R.drawable.button_attack_ground;
+                break;
+            case "ice":
+                res = R.drawable.button_attack_ice;
+                break;
+            case "normal":
+                res = R.drawable.button_attack_normal;
+                break;
+            case "poison":
+                res = R.drawable.button_attack_poison;
+                break;
+            case "psychic":
+                res = R.drawable.button_attack_psychic;
+                break;
+            case "rock":
+                res = R.drawable.button_attack_rock;
+                break;
+            case "steel":
+                res = R.drawable.button_attack_steel;
+                break;
+            case "water":
+                res = R.drawable.button_attack_water;
+                break;
+        }
+
+        return res;
+    }
+
 
     private void triggerAttackOptions(final JSONArray active) {
         if (getView() == null) {
@@ -1804,9 +2010,12 @@ public class BattleFragment extends Fragment {
 
         CheckBox megaevocheckBox = (CheckBox) getView().findViewById(R.id.mega_evolution_checkbox);
         CheckBox zmovecheckBox = (CheckBox) getView().findViewById(R.id.zmove_checkbox);
+        CheckBox ultraburstcheckBox = (CheckBox) getView().findViewById(R.id.ultraburst_checkbox);
 
         megaevocheckBox.setChecked(false);
         zmovecheckBox.setChecked(false);
+        ultraburstcheckBox.setChecked(false);
+
 
         try {
             final JSONObject currentActive = active.getJSONObject(mCurrentActivePokemon);
@@ -1815,6 +2024,13 @@ public class BattleFragment extends Fragment {
                 megaevocheckBox.setVisibility(View.VISIBLE);
             } else {
                 megaevocheckBox.setVisibility(View.GONE);
+            }
+
+
+            if (currentActive.optBoolean("canUltraBurst", false)) {
+                ultraburstcheckBox.setVisibility(View.VISIBLE);
+            } else {
+                ultraburstcheckBox.setVisibility(View.GONE);
             }
 
             if (currentActive.optJSONArray("canZMove") != null) {
@@ -2074,10 +2290,14 @@ public class BattleFragment extends Fragment {
                 CheckBox zMovecheckBox = (CheckBox) getView().findViewById(R.id.zmove_checkbox);
 
                 CheckBox checkBox = (CheckBox) getView().findViewById(R.id.mega_evolution_checkbox);
+
+                CheckBox UltraBurstcheckBox = (CheckBox) getView().findViewById(R.id.ultraburst_checkbox);
                 if (checkBox.isChecked()) {
                     command = "move " + (moveId + 1) + " mega";
                 } else if (zMovecheckBox.isChecked()) {
                     command = "move " + (moveId + 1) + " zmove";
+                } else if (UltraBurstcheckBox.isChecked()) {
+                    command = "move " + (moveId + 1) + " ultra";
                 } else {
                     command = "move " + (moveId + 1);
                 }

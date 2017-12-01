@@ -17,20 +17,22 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:background="@drawable/onclick_editable"
                 android:paddingBottom="8dp"
                 android:paddingTop="8dp">
 
                 <TextView
                     android:id="@+id/active_move1_name"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
+                    android:layout_height="wrap_content"
+                    android:textColor="@android:color/white"/>
 
                 <TextView
                     android:id="@+id/active_move1_pp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"/>
+                    android:layout_alignParentRight="true"
+                    android:textColor="@android:color/white"/>
+
 
                 <ImageView
                     android:id="@+id/active_move1_icon"
@@ -51,20 +53,22 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:background="@drawable/onclick_editable"
                 android:paddingBottom="8dp"
                 android:paddingTop="8dp">
 
                 <TextView
                     android:id="@+id/active_move2_name"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
+                    android:layout_height="wrap_content"
+                    android:textColor="@android:color/white"/>
 
                 <TextView
                     android:id="@+id/active_move2_pp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"/>
+                    android:layout_alignParentRight="true"
+                    android:textColor="@android:color/white"/>
+
 
                 <ImageView
                     android:id="@+id/active_move2_icon"
@@ -90,7 +94,6 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:background="@drawable/onclick_editable"
                 android:orientation="vertical"
                 android:paddingBottom="8dp"
                 android:paddingTop="8dp">
@@ -98,13 +101,16 @@
                 <TextView
                     android:id="@+id/active_move3_name"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
+                    android:layout_height="wrap_content"
+                    android:textColor="@android:color/white"/>
 
                 <TextView
                     android:id="@+id/active_move3_pp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"/>
+                    android:layout_alignParentRight="true"
+                    android:textColor="@android:color/white"/>
+
 
                 <ImageView
                     android:id="@+id/active_move3_icon"
@@ -125,20 +131,21 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:background="@drawable/onclick_editable"
                 android:paddingBottom="8dp"
                 android:paddingTop="8dp">
 
                 <TextView
                     android:id="@+id/active_move4_name"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
+                    android:layout_height="wrap_content"
+                    android:textColor="@android:color/white"/>
 
                 <TextView
                     android:id="@+id/active_move4_pp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"/>
+                    android:layout_alignParentRight="true"
+                    android:textColor="@android:color/white"/>
 
                 <ImageView
                     android:id="@+id/active_move4_icon"
@@ -165,6 +172,15 @@
         android:layout_gravity="center_horizontal"
         android:background="@drawable/editable_frame_light_orange"
         android:text="@string/mega_evolution"
+        android:visibility="gone"/>
+
+    <CheckBox
+        android:id="@+id/ultraburst_checkbox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:background="@drawable/editable_frame_light_orange"
+        android:text="@string/ultraburst"
         android:visibility="gone"/>
 
     <CheckBox

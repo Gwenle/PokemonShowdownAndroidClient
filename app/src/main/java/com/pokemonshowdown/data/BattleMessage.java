@@ -284,29 +284,29 @@ public class BattleMessage {
                         FrameLayout frameLayout = (FrameLayout) battleFragment.getView().findViewById(R.id.battle_interface);
                         frameLayout.removeAllViews();
                         battleFragment.getActivity().getLayoutInflater().inflate(R.layout.fragment_battle_teampreview, frameLayout);
-                        for (int i = 0; i < team1.size(); i++) {
+                        for (int i = 0; i < t1.size(); i++) {
                             ImageView sprites = (ImageView) battleFragment.getView().findViewById(battleFragment.getTeamPreviewSpriteId("p1", i));
-                            PokemonInfo pkm = team1.get(i);
+                            PokemonInfo pkm = t1.get(i);
                             sprites.setImageResource(Pokemon.getPokemonSprite(battleFragment.getActivity(),
                                     MyApplication.toId(pkm.getName()), true, pkm.isFemale(), pkm.isShiny()));
                             ((ImageView) battleFragment.getView().findViewById(battleFragment.getIconId("p1", i)))
                                     .setImageResource(Pokemon.getPokemonIcon(battleFragment.getActivity(),
                                             MyApplication.toId(pkm.getName())));
                         }
-                        for (int i = team1.size(); i < 6; i++) {
+                        for (int i = t1.size(); i < 6; i++) {
                             ((ImageView) battleFragment.getView().findViewById(battleFragment.getIconId("p1", i)))
                                     .setImageResource(R.drawable.pokeball_none);
                         }
-                        for (int i = 0; i < team2.size(); i++) {
+                        for (int i = 0; i < t2.size(); i++) {
                             ImageView sprites = (ImageView) battleFragment.getView().findViewById(battleFragment.getTeamPreviewSpriteId("p2", i));
-                            PokemonInfo pkm = team2.get(i);
+                            PokemonInfo pkm = t2.get(i);
                             sprites.setImageResource(Pokemon.getPokemonSprite(battleFragment.getActivity(),
                                     MyApplication.toId(pkm.getName()), false, pkm.isFemale(), pkm.isShiny()));
                             ((ImageView) battleFragment.getView().findViewById(battleFragment.getIconId("p2", i)))
                                     .setImageResource(Pokemon.getPokemonIcon(battleFragment.getActivity(),
                                             MyApplication.toId(pkm.getName())));
                         }
-                        for (int i = team2.size(); i < 6; i++) {
+                        for (int i = t2.size(); i < 6; i++) {
                             ((ImageView) battleFragment.getView().findViewById(battleFragment.getIconId("p2", i)))
                                     .setImageResource(R.drawable.pokeball_none);
                         }
@@ -512,6 +512,17 @@ public class BattleMessage {
 
                 //TODO need to handle roar & cie
                 toAppendBuilder = new StringBuilder();
+
+                int tempHp;
+                String tempStatus;
+
+                try {
+                    tempHp = processHpFraction(split[2]);
+                    tempStatus = processStatusFraction(split[2]);
+                } catch (ArrayIndexOutOfBoundsException ex) { // zoroark's transform
+                    tempHp = processHpFraction(split[0]);
+                    tempStatus = processStatusFraction(split[0]);
+                }
                 
                 final int hp = processHpFraction(split[2]);
                 final String status = processStatusFraction(split[2]);
@@ -1393,6 +1404,40 @@ public class BattleMessage {
                 logMessage = new SpannableStringBuilder(toAppendBuilder);
                 break;
 
+            case "-clearnegativeboost":
+                attackerOutputName = battleFragment.getPrintableOutputPokemonSide(split[0]);
+                toAppendBuilder.append(attackerOutputName).append("'s negative stat changes were removed!");
+                toast = battleFragment.makeMinorToast(new SpannableStringBuilder(toAppendBuilder));
+                toast.addListener(new AnimatorListenerWithNet() {
+                    @Override
+                    public void onAnimationStartWithNet(Animator animation) {
+                        if (battleFragment.getView() == null) {
+                            return;
+                        }
+                        battleFragment.clearnegativeBoost(split[0]);
+                    }
+                });
+                battleFragment.startAnimation(toast, message);
+                logMessage = new SpannableStringBuilder(toAppendBuilder);
+                break;
+
+            case "-clearpositiveboost":
+                attackerOutputName = battleFragment.getPrintableOutputPokemonSide(split[0]);
+                toAppendBuilder.append(attackerOutputName).append("'s positive stat changes were removed!");
+                toast = battleFragment.makeMinorToast(new SpannableStringBuilder(toAppendBuilder));
+                toast.addListener(new AnimatorListenerWithNet() {
+                    @Override
+                    public void onAnimationStartWithNet(Animator animation) {
+                        if (battleFragment.getView() == null) {
+                            return;
+                        }
+                        battleFragment.clearpositiveBoost(split[0]);
+                    }
+                });
+                battleFragment.startAnimation(toast, message);
+                logMessage = new SpannableStringBuilder(toAppendBuilder);
+                break;
+
             case "-copyboost":
                 attackerOutputName = battleFragment.getPrintableOutputPokemonSide(split[0]);
                 defenderOutputName = battleFragment.getPrintableOutputPokemonSide(split[1], false);
@@ -1401,7 +1446,15 @@ public class BattleMessage {
                 toast.addListener(new AnimatorListenerWithNet() {
                     @Override
                     public void onAnimationStartWithNet(Animator animation) {
-                        battleFragment.copyBoost(split[0], split[1]);
+                        if (battleFragment.getView() == null) {
+                            return;
+                        }
+                        LinearLayout linearLayout = (LinearLayout) battleFragment.getView().findViewById(battleFragment.getTempStatusId(split[0]));
+                        for (String stat : BattleFragment.STATS) {
+                            TextView v = (TextView) linearLayout.findViewWithTag(stat);
+                            linearLayout.removeView(v);
+                        }
+                        battleFragment.copyBoost(split[1], split[0]);
                     }
                 });
                 battleFragment.startAnimation(toast, message);
@@ -2257,15 +2310,33 @@ public class BattleMessage {
 
                     case "powertrick":
                         toAppendBuilder.append(attackerOutputName).append(" switched its Attack and Defense!");
+                            animatorSet.addListener(new AnimatorListenerWithNet() {
+                                @Override
+                                public void onAnimationStartWithNet(Animator animation) {
+                                    battleFragment.setAddonStatus(split[0], newEffect);
+                            }
+                        });
                         break;
 
                     case "foresight":
                     case "miracleeye":
                         toAppendBuilder.append(attackerOutputName).append(" was identified!");
+                            animatorSet.addListener(new AnimatorListenerWithNet() {
+                                @Override
+                                public void onAnimationStartWithNet(Animator animation) {
+                                    battleFragment.setAddonStatus(split[0], newEffect);
+                            }
+                        });
                         break;
 
                     case "telekinesis":
                         toAppendBuilder.append(attackerOutputName).append(" was hurled into the air!");
+                            animatorSet.addListener(new AnimatorListenerWithNet() {
+                                @Override
+                                public void onAnimationStartWithNet(Animator animation) {
+                                    battleFragment.setAddonStatus(split[0], newEffect);
+                            }
+                        });
                         break;
 
                     case "confusion":
@@ -2294,10 +2365,22 @@ public class BattleMessage {
 
                     case "mudsport":
                         toAppendBuilder.append("Electricity's power was weakened!");
+                            animatorSet.addListener(new AnimatorListenerWithNet() {
+                                @Override
+                                public void onAnimationStartWithNet(Animator animation) {
+                                    battleFragment.setAddonStatus(split[0], newEffect);
+                            }
+                        });
                         break;
 
                     case "watersport":
                         toAppendBuilder.append("Fire's power was weakened!");
+                            animatorSet.addListener(new AnimatorListenerWithNet() {
+                                @Override
+                                public void onAnimationStartWithNet(Animator animation) {
+                                    battleFragment.setAddonStatus(split[0], newEffect);
+                            }
+                        });
                         break;
 
                     case "yawn":
@@ -2353,6 +2436,12 @@ public class BattleMessage {
 
                     case "embargo":
                         toAppendBuilder.append(attackerOutputName).append(" can't use items anymore!");
+                            animatorSet.addListener(new AnimatorListenerWithNet() {
+                                @Override
+                                public void onAnimationStartWithNet(Animator animation) {
+                                    battleFragment.setAddonStatus(split[0], newEffect);
+                            }
+                        });
                         break;
 
                     case "ingrain":
@@ -2415,6 +2504,12 @@ public class BattleMessage {
 
                     case "bide":
                         toAppendBuilder.append(attackerOutputName).append(" is storing energy!");
+                            animatorSet.addListener(new AnimatorListenerWithNet() {
+                                @Override
+                                public void onAnimationStartWithNet(Animator animation) {
+                                    battleFragment.setAddonStatus(split[0], newEffect);
+                            }
+                        });
                         break;
 
                     case "slowstart":
@@ -2453,6 +2548,12 @@ public class BattleMessage {
 
                     case "focusenergy":
                         toAppendBuilder.append(attackerOutputName).append(" is getting pumped!");
+                            animatorSet.addListener(new AnimatorListenerWithNet() {
+                                @Override
+                                public void onAnimationStartWithNet(Animator animation) {
+                                    battleFragment.setAddonStatus(split[0], newEffect);
+                            }
+                        });
                         break;
 
                     case "curse":
@@ -2534,6 +2635,12 @@ public class BattleMessage {
                         } else {
                             toAppendBuilder.append(attackerOutputName).append(" caused an uproar!");
                         }
+                            animatorSet.addListener(new AnimatorListenerWithNet() {
+                                @Override
+                                public void onAnimationStartWithNet(Animator animation) {
+                                    battleFragment.setAddonStatus(split[0], newEffect);
+                            }
+                        });
                         break;
 
                     case "doomdesire":
@@ -2563,10 +2670,22 @@ public class BattleMessage {
                     case "followme":
                     case "ragepowder":
                         toAppendBuilder.append(attackerOutputName).append(" became the center of attention!");
+                            animatorSet.addListener(new AnimatorListenerWithNet() {
+                                @Override
+                                public void onAnimationStartWithNet(Animator animation) {
+                                    battleFragment.setAddonStatus(split[0], newEffect);
+                            }
+                        });
                         break;
 
                     case "powder":
                         toAppendBuilder.append(attackerOutputName).append(" is covered in powder!");
+                            animatorSet.addListener(new AnimatorListenerWithNet() {
+                                @Override
+                                public void onAnimationStartWithNet(Animator animation) {
+                                    battleFragment.setAddonStatus(split[0], newEffect);
+                            }
+                        });
                         break;
 
                     default:
