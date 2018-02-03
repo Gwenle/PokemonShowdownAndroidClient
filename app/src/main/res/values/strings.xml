@@ -26,7 +26,8 @@
     <!-- These are available server lists -->
     <!-- Need to update server destination in WelcomeActivity.java as well -->
     <string-array name="server">
-        <item>Smogon University (official server)</item>
+        <item>Smogon University (PS官服)</item>
+        <item>PSChina Server (PS国服)</item>
         <item>Smogon Tournaments</item>
     </string-array>
 
