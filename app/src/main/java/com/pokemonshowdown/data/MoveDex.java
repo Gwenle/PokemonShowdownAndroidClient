@@ -16,15 +16,19 @@ import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Iterator;
 
+import static com.pokemonshowdown.data.Translations.translateMove;
+
 public class MoveDex {
     private final static String MTAG = MoveDex.class.getName();
     private static MoveDex sMoveDex;
     private HashMap<String, String> mMoveDexEntries;
     private HashMap<String, Moves> mMoveAnimationEntries;
+    private Context appContext;
 
     private MoveDex(Context appContext) {
         mMoveDexEntries = readFile(appContext);
         initializeAnimationEntries();
+        this.appContext=appContext;
     }
 
     private HashMap<String, String> readFile(Context appContext) {
@@ -451,6 +455,8 @@ public class MoveDex {
         try {
             name = MyApplication.toId(name);
             JSONObject moveJson = MoveDex.get(appContext).getMoveJsonObject(name);
+            if(Onboarding.get(appContext).isChineseEnable())
+                return translateMove(moveJson.getString("name"));
             return moveJson.getString("name");
         } catch (JSONException | NullPointerException e) {
             return null;

@@ -15,6 +15,8 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 
+import static com.pokemonshowdown.data.Translations.translatePokemon;
+
 /**
  * <p/>
  * Array index (including nature array)
@@ -37,6 +39,9 @@ public class Pokemon implements Serializable {
     public final static String PTAG = Pokemon.class.getName();
     public final static String[] NATURES = {"Adamant", "Bashful", "Bold", "Brave", "Calm", "Careful", "Docile", "Gentle", "Hardy", "Hasty", "Impish", "Jolly", "Lax", "Lonely", "Mild", "Modest", "Naive", "Naughty", "Quiet", "Quirky", "Rash", "Relaxed", "Sassy", "Serious", "Timid"};
     public final static String[] NATURES_DETAILS = {"Adamant (+Atk -SpA)", "Bashful", "Bold (+Def -Atk)", "Brave (+Atk -Spe)", "Calm (+SpD -Atk)", "Careful (+SpD -SpA)", "Docile", "Gentle (+SpD -Def)", "Hardy", "Hasty (+Spe -Def)", "Impish (+Def -SpA)", "Jolly (+Spe -SpA)", "Lax (+Def -SpD)", "Lonely (+Atk -Def)", "Mild (+SpA -Def)", "Modest (+SpA -Atk)", "Naive (+Spe -SpD)", "Naughty (+Atk -SpD)", "Quiet (+SpA -Spe)", "Quirky", "Rash (+SpA -SpD)", "Relaxed (+Def -Spe)", "Sassy (+SpD -Spe)", "Serious", "Timid (+Spe -Atk)"};
+
+
+    public final static String[] NATURES_DETAILS_ZH = {"固执 (+Atk -SpA)", "Bashful", "大胆 (+Def -Atk)", "勇敢 (+Atk -Spe)", "温和 (+SpD -Atk)", "慎重 (+SpD -SpA)", "坦率", "温顺 (+SpD -Def)", "Hardy", "急躁 (+Spe -Def)", "淘气 (+Def -SpA)", "爽朗 (+Spe -SpA)", "乐天 (+Def -SpD)", "怕寂寞 (+Atk -Def)", "慢吞吞 (+SpA -Def)", "内敛 (+SpA -Atk)", "天真 (+Spe -SpD)", "顽皮 (+Atk -SpD)", "冷静 (+SpA -Spe)", "Quirky", "马虎 (+SpA -SpD)", "悠闲 (+Def -Spe)", "自大 (+SpD -Spe)", "Serious", "胆小 (+Spe -Atk)"};
 
     private final static double[] STAGES_MAIN_STATS = {0.25, 0.285, 0.33, 0.4, 0.5, 0.66, 1, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0};
 
@@ -568,9 +573,14 @@ public class Pokemon implements Serializable {
     }
 
     public static String getPokemonName(Context appContext, String name) {
+        Log.i("POKEMON",name);
         try {
             JSONObject jsonObject = Pokedex.get(appContext).getPokemonJSONObject(name);
-            return jsonObject.getString("species");
+            if (Onboarding.get(appContext).isChineseEnable()) {
+                return translatePokemon(jsonObject.getString("species"));
+            }
+            else
+                return jsonObject.getString("species");
         } catch (JSONException e) {
             Log.d(PTAG, e.toString());
         } catch (NullPointerException e) {
@@ -791,6 +801,7 @@ public class Pokemon implements Serializable {
     }
 
     public String getNature() {
+
         return mNature;
     }
 

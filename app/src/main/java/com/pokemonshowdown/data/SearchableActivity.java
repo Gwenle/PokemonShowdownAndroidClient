@@ -26,6 +26,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 
+import static com.pokemonshowdown.data.Translations.translateAbility;
+import static com.pokemonshowdown.data.Translations.translateMove;
+
 public class SearchableActivity extends ListActivity {
     public final static String STAG = SearchableActivity.class.getName();
     public final static int REQUEST_CODE_SEARCH_POKEMON = 0;
@@ -306,7 +309,10 @@ public class SearchableActivity extends ListActivity {
 
                 JSONObject abilityJson = AbilityDex.get(getApplicationContext()).getAbilityJsonObject(abilityName);
                 TextView textView = (TextView) convertView.findViewById(R.id.short_ability_name);
-                textView.setText(abilityJson.getString("name"));
+                if(Onboarding.get(mContext).isChineseEnable())
+                    textView.setText(translateAbility(abilityJson.getString("name")));
+                else
+                    textView.setText(abilityJson.getString("name"));
                 textView.setCompoundDrawablesWithIntrinsicBounds(Pokedex.getUnownIcon(getApplicationContext(), abilityName), 0, 0, 0);
                 ((TextView) convertView.findViewById(R.id.short_ability_description)).setText(abilityJson.getString("shortDesc"));
             } catch (JSONException e) {
@@ -335,7 +341,10 @@ public class SearchableActivity extends ListActivity {
 
                 JSONObject moveJson = MoveDex.get(getApplicationContext()).getMoveJsonObject(move);
                 TextView textView = (TextView) convertView.findViewById(R.id.short_move_name);
-                textView.setText(moveJson.getString("name"));
+                if(Onboarding.get(mContext).isChineseEnable())
+                    textView.setText(translateMove(moveJson.getString("name")));
+                else
+                    textView.setText(moveJson.getString("name"));
                 ImageView type = (ImageView) convertView.findViewById(R.id.type);
                 type.setImageResource(MoveDex.getTypeIcon(getApplicationContext(), moveJson.getString("type")));
                 ImageView category = (ImageView) convertView.findViewById(R.id.category);
@@ -381,9 +390,15 @@ public class SearchableActivity extends ListActivity {
                 String itemTag = getItem(position);
                 JSONObject itemJson = ItemDex.get(getApplicationContext()).getItemJsonObject(itemTag);
                 TextView textView = (TextView) convertView.findViewById(R.id.short_item_name);
-                textView.setText(itemJson.getString("name"));
+                if(Onboarding.get(mContext).isChineseEnable())
+                    textView.setText(translateAbility(itemJson.getString("name")));
+                else
+                    textView.setText(itemJson.getString("name"));
                 textView.setCompoundDrawablesWithIntrinsicBounds(ItemDex.getItemIcon(getApplicationContext(), itemTag), 0, 0, 0);
-                ((TextView) convertView.findViewById(R.id.short_item_description)).setText(itemJson.getString("desc"));
+                if(Onboarding.get(mContext).isChineseEnable())
+                    ((TextView) convertView.findViewById(R.id.short_item_description)).setText(itemJson.getString("zhDesc"));
+                else
+                    ((TextView) convertView.findViewById(R.id.short_item_description)).setText(itemJson.getString("desc"));
             } catch (JSONException e) {
                 Log.d(STAG, e.toString());
             }

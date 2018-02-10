@@ -19,6 +19,7 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.pokemonshowdown.data.ItemDex;
+import com.pokemonshowdown.data.Onboarding;
 import com.pokemonshowdown.data.Pokemon;
 import com.pokemonshowdown.data.SearchableActivity;
 
@@ -26,6 +27,8 @@ import org.json.JSONObject;
 
 import java.util.Arrays;
 import java.util.Set;
+
+import static com.pokemonshowdown.data.Translations.translateAbility;
 
 public class PokemonFragment extends DialogFragment {
     public final static String PTAG = PokemonFragment.class.getName();
@@ -202,6 +205,8 @@ public class PokemonFragment extends DialogFragment {
                 int selectedAbility = 0;
                 for (int i = 0; i < abilityList.length; i++) {
                     abilityNames[i] = getPokemon().getAbilityList().get(abilityList[i]);
+                    if(Onboarding.get(getContext()).isChineseEnable())
+                        abilityNames[i]=translateAbility(abilityNames[i]);
                     if (abilityList[i].equals(selectedAbilityTag)) {
                         selectedAbility = i;
                     }
@@ -267,12 +272,18 @@ public class PokemonFragment extends DialogFragment {
             @Override
             public void onClick(View v) {
                 int selectedNature = Arrays.binarySearch(Pokemon.NATURES, getPokemon().getNature());
+                String[] natureDetails=Pokemon.NATURES_DETAILS;
+                if(Onboarding.get(getContext()).isChineseEnable())
+                    natureDetails=Pokemon.NATURES_DETAILS_ZH;
                 Dialog dialog = new AlertDialog.Builder(getActivity())
-                        .setSingleChoiceItems(Pokemon.NATURES_DETAILS, selectedNature, new DialogInterface.OnClickListener() {
+                        .setSingleChoiceItems(natureDetails, selectedNature, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 String newNature = Pokemon.NATURES[which];
+
                                 nature.setText(newNature);
+                                if(Onboarding.get(getContext()).isChineseEnable())
+                                    nature.setText(Pokemon.NATURES_DETAILS_ZH[which]);
                                 mPokemon.setNature(newNature);
                                 mPokemon.setStats(getPokemon().calculateStats());
                                 PokemonFragment.this.resetStatsString();

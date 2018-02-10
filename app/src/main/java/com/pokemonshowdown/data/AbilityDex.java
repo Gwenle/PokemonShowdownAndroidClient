@@ -16,6 +16,8 @@ import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Iterator;
 
+import static com.pokemonshowdown.data.Translations.translateAbility;
+
 public class AbilityDex {
     public final static String ATAG = AbilityDex.class.getName();
     private static AbilityDex sAbilityDex;
@@ -63,6 +65,8 @@ public class AbilityDex {
         try {
             name = MyApplication.toId(name);
             JSONObject abilityJson = AbilityDex.get(appContext).getAbilityJsonObject(name);
+            if(Onboarding.get(appContext).isChineseEnable())
+                return translateAbility(abilityJson.getString("name"));
             return abilityJson.getString("name");
         } catch (JSONException | NullPointerException e) {
             return null;

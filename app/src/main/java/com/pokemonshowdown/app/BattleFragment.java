@@ -49,6 +49,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
 
+import static com.pokemonshowdown.data.Translations.translateMove;
+import static com.pokemonshowdown.data.Translations.translatePokemon;
+
 public class BattleFragment extends Fragment {
     public final static String BTAG = BattleFragment.class.getName();
     public final static String ROOM_ID = "Room Id";
@@ -254,7 +257,11 @@ public class BattleFragment extends Fragment {
                 if (mBattling == -1) {
                     processedMessage = message.replace("p1", "p3").replace("p2", "p1").replace("p3", "p2");
                 }
-                BattleMessage.processMajorAction(BattleFragment.this, processedMessage);
+                if (Onboarding.get(getContext()).isChineseEnable()) {
+                    BattleMessage.processMajorActionZHCN(BattleFragment.this, processedMessage);
+                }
+                else
+                    BattleMessage.processMajorAction(BattleFragment.this, processedMessage);
             }
         }.run();
     }
@@ -396,10 +403,13 @@ public class BattleFragment extends Fragment {
 
         String[] team1 = {"p1a", "p1b", "p1c"};
         String[] team2 = {"p2a", "p2b", "p2c"};
+        boolean isChineseEnable=Onboarding.get(getContext()).isChineseEnable();
         if (getView().findViewById(getPkmLayoutId("p1a")) != null) {
             for (int i = 0; i < team1.length; i++) {
                 View team1View = getView().findViewById(getPkmLayoutId(team1[i]));
                 CharSequence team1Name = ((TextView) getView().findViewById(getSpriteNameid(team1[i]))).getText();
+                if(isChineseEnable)
+                    team1Name=translatePokemon(team1Name.toString());
                 Drawable team1Gender = ((ImageView) getView().findViewById(getGenderId(team1[i]))).getDrawable();
                 int team1Hp = ((ProgressBar) getView().findViewById(getHpBarId(team1[i]))).getProgress();
                 Drawable team1Sprite = ((ImageView) getView().findViewById(getSpriteId(team1[i]))).getDrawable();
@@ -412,6 +422,8 @@ public class BattleFragment extends Fragment {
 
                 View team2View = getView().findViewById(getPkmLayoutId(team2[i]));
                 CharSequence team2Name = ((TextView) getView().findViewById(getSpriteNameid(team2[i]))).getText();
+                if(isChineseEnable)
+                    team2Name=translatePokemon(team2Name.toString());
                 Drawable team2Gender = ((ImageView) getView().findViewById(getGenderId(team2[i]))).getDrawable();
                 int team2Hp = ((ProgressBar) getView().findViewById(getHpBarId(team2[i]))).getProgress();
                 Drawable team2Sprite = ((ImageView) getView().findViewById(getSpriteId(team2[i]))).getDrawable();
@@ -1767,6 +1779,7 @@ public class BattleFragment extends Fragment {
     }
 
     private void setMoves(JSONArray active, boolean isZMove) throws JSONException {
+        boolean isChineseEnable=Onboarding.get(getContext()).isChineseEnable();
 
         RelativeLayout[] moveViews = new RelativeLayout[4];
         moveViews[0] = (RelativeLayout) getView().findViewById(R.id.active_move1);
@@ -1794,6 +1807,8 @@ public class BattleFragment extends Fragment {
             moves = active.getJSONObject(mCurrentActivePokemon).getJSONArray("canZMove");
             for (int i = 0; i < moves.length(); i++) {
                 String zmoveName = moves.getString(i);
+                if(isChineseEnable)
+                    zmoveName=translateMove(zmoveName);
                 moveNames[i].setText(zmoveName);
                 int typeIcon = MoveDex.getMoveTypeIcon(getActivity(), MyApplication.toId(zmoveName));
                 moveIcons[i].setImageResource(typeIcon);
@@ -1805,9 +1820,15 @@ public class BattleFragment extends Fragment {
             for (int i = 0; i < moves.length(); i++) {
                 JSONObject moveJson = moves.getJSONObject(i);
                 if (moveJson.getString("move").startsWith("Return")) {
-                    moveNames[i].setText("Return");
+                    if(isChineseEnable)
+                        moveNames[i].setText("报恩");
+                    else
+                        moveNames[i].setText("Return");
                 } else {
-                    moveNames[i].setText(moveJson.getString("move"));
+                    if(isChineseEnable)
+                        moveNames[i].setText(translateMove(moveJson.getString("move")));
+                    else
+                        moveNames[i].setText(moveJson.getString("move"));
                 }
                 if (moveJson.optString("maxpp", "0").equals("0")) {
                     //sttruggle has noppinfo

@@ -16,13 +16,17 @@ import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Iterator;
 
+import static com.pokemonshowdown.data.Translations.translateAbility;
+
 public class ItemDex {
     private final static String ITAG = ItemDex.class.getName();
     private static ItemDex sItemDex;
     private HashMap<String, String> mItemDexEntries;
+    private Context appContext;
 
     private ItemDex(Context appContext) {
-        mItemDexEntries = readFile(appContext);
+            mItemDexEntries = readFile(appContext);
+            this.appContext=appContext;
     }
 
     private HashMap<String, String> readFile(Context appContext) {
@@ -82,7 +86,10 @@ public class ItemDex {
             item = mItemDexEntries.get(name);
             if (item != null) {
                 JSONObject itemEntries = new JSONObject(item);
+
                 item = itemEntries.getString("name");
+                if(Onboarding.get(appContext).isChineseEnable())
+                    item=translateAbility(item);
             }
         } catch (JSONException e) {
             item = null;

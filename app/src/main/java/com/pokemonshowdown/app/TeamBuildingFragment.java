@@ -29,6 +29,7 @@ import android.widget.Toast;
 
 import com.pokemonshowdown.data.ItemDex;
 import com.pokemonshowdown.data.MoveDex;
+import com.pokemonshowdown.data.Onboarding;
 import com.pokemonshowdown.data.Pokemon;
 import com.pokemonshowdown.data.PokemonTeam;
 import com.pokemonshowdown.data.SearchableActivity;
@@ -37,6 +38,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.List;
+
+import static com.pokemonshowdown.data.Translations.translateAbility;
+import static com.pokemonshowdown.data.Translations.translateMove;
 
 /**
  * This class is a Fragment loaded in the TeamBuildingActivity
@@ -417,6 +421,7 @@ public class TeamBuildingFragment extends Fragment {
 
         @Override
         public View getView(final int position, View convertView, ViewGroup parent) {
+            boolean isChineseEnable=Onboarding.get(getContext()).isChineseEnable();
             if (convertView == null) {
                 convertView = getActivity().getLayoutInflater().inflate(R.layout.listwidget_detailledpokemon, null);
             }
@@ -471,7 +476,10 @@ public class TeamBuildingFragment extends Fragment {
                 if (itemJSon != null) {
                     try {
                         String itemName = itemJSon.getString("name");
-                        itemNameTextView.setText(itemName);
+                        if(isChineseEnable)
+                            itemNameTextView.setText(translateAbility(itemName));
+                        else
+                            itemNameTextView.setText(itemName);
                         int itemDrawable = ItemDex.getItemIcon(TeamBuildingFragment.this.getActivity(), pokemon.getItem());
                         if (itemDrawable != 0) {
                             itemNameTextView.setCompoundDrawablesWithIntrinsicBounds(getResources().getDrawable(itemDrawable), null, null, null);
@@ -509,7 +517,10 @@ public class TeamBuildingFragment extends Fragment {
                         String pp = String.valueOf(move1Object.getInt("pp"));
                         pp = MoveDex.getMaxPP(pp);
                         move1PpTextView.setText(pp + "/" + pp);
-                        move1NameTextView.setText(move1Object.getString("name"));
+                        if(isChineseEnable)
+                            move1NameTextView.setText(translateMove(move1Object.getString("name")));
+                        else
+                            move1NameTextView.setText(move1Object.getString("name"));
                     } catch (JSONException e) {
                         pokemon.setMove1("");
                         Log.e(TAG, "", e);
@@ -536,7 +547,10 @@ public class TeamBuildingFragment extends Fragment {
                         String pp = String.valueOf(move2Object.getInt("pp"));
                         pp = MoveDex.getMaxPP(pp);
                         move2PpTextView.setText(pp + "/" + pp);
-                        move2NameTextView.setText(move2Object.getString("name"));
+                        if(isChineseEnable)
+                            move2NameTextView.setText(translateMove(move2Object.getString("name")));
+                        else
+                            move2NameTextView.setText(move2Object.getString("name"));
                     } catch (JSONException e) {
                         pokemon.setMove2("");
                         Log.e(TAG, "", e);
@@ -564,7 +578,10 @@ public class TeamBuildingFragment extends Fragment {
                         String pp = String.valueOf(move3Object.getInt("pp"));
                         pp = MoveDex.getMaxPP(pp);
                         move3PpTextView.setText(pp + "/" + pp);
-                        move3NameTextView.setText(move3Object.getString("name"));
+                        if(isChineseEnable)
+                            move3NameTextView.setText(translateMove(move3Object.getString("name")));
+                        else
+                            move3NameTextView.setText(move3Object.getString("name"));
                     } catch (JSONException e) {
                         pokemon.setMove3("");
                         Log.e(TAG, "", e);
@@ -591,7 +608,10 @@ public class TeamBuildingFragment extends Fragment {
                         String pp = String.valueOf(move4Object.getInt("pp"));
                         pp = MoveDex.getMaxPP(pp);
                         move4PpTextView.setText(pp + "/" + pp);
-                        move4NameTextView.setText(move4Object.getString("name"));
+                        if(isChineseEnable)
+                            move4NameTextView.setText(translateMove(move4Object.getString("name")));
+                        else
+                            move4NameTextView.setText(move4Object.getString("name"));
                     } catch (JSONException e) {
                         pokemon.setMove4("");
                         Log.e(TAG, "", e);
