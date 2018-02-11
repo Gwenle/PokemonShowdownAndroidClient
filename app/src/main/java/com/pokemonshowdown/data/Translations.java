@@ -177,7 +177,7 @@ public class Translations {
         pokemonDict.put("Seaking","金鱼王");
         pokemonDict.put("Staryu","海星星");
         pokemonDict.put("Starmie","宝石海星");
-        pokemonDict.put("Mr.Mime","魔墙人偶");
+        pokemonDict.put("Mr. Mime","魔墙人偶");
         pokemonDict.put("Scyther","飞天螳螂");
         pokemonDict.put("Jynx","迷唇姐");
         pokemonDict.put("Electabuzz","电击兽");
@@ -522,6 +522,7 @@ public class Translations {
         pokemonDict.put("Cherrim-Sunshine","樱花儿-晴天形态");
         pokemonDict.put("Shellos","无壳海兔");
         pokemonDict.put("Gastrodon","海兔兽");
+        pokemonDict.put("Gastrodon-East","海兔兽-东之海");
         pokemonDict.put("Ambipom","双尾怪手");
         pokemonDict.put("Drifloon","飘飘球");
         pokemonDict.put("Drifblim","随风球");
@@ -538,7 +539,7 @@ public class Translations {
         pokemonDict.put("Bronzor","铜镜怪");
         pokemonDict.put("Bronzong","青铜钟");
         pokemonDict.put("Bonsly","盆才怪");
-        pokemonDict.put("MimeJr.","魔尼尼");
+        pokemonDict.put("Mime Jr.","魔尼尼");
         pokemonDict.put("Happiny","小福蛋");
         pokemonDict.put("Chatot","聒噪鸟");
         pokemonDict.put("Spiritomb","花岩怪");
@@ -818,7 +819,7 @@ public class Translations {
         pokemonDict.put("Vivillon","彩粉蝶");
         pokemonDict.put("Litleo","小狮狮");
         pokemonDict.put("Pyroar","火炎狮");
-        pokemonDict.put("Flabébé","花蓓蓓");
+        pokemonDict.put("Flabebe","花蓓蓓");
         pokemonDict.put("Floette","花叶蒂");
         pokemonDict.put("Floette-Eternal","花叶蒂-永恒");
         pokemonDict.put("Florges","花洁夫人");
@@ -909,6 +910,7 @@ public class Translations {
         pokemonDict.put("Ribombee","蝶结萌虻");
         pokemonDict.put("Rockruff","岩狗狗");
         pokemonDict.put("Lycanroc","鬃岩狼人");
+        pokemonDict.put("Lycanroc-Dusk","鬃岩狼人-黄昏的样子");
         pokemonDict.put("Lycanroc-Midnight","鬃岩狼人-夜晚的样子");
         pokemonDict.put("Wishiwashi","弱丁鱼");
         pokemonDict.put("Wishiwashi-School","弱丁鱼-鱼群的样子");
@@ -937,7 +939,7 @@ public class Translations {
         pokemonDict.put("Sandygast","沙丘娃");
         pokemonDict.put("Palossand","噬沙堡爷");
         pokemonDict.put("Pyukumuku","拳海参");
-        pokemonDict.put("Type:Null","属性：空");
+        pokemonDict.put("Type: Null","属性：空");
         pokemonDict.put("Silvally","银伴战兽-普通");
         pokemonDict.put("Silvally-Bug","银伴战兽-虫");
         pokemonDict.put("Silvally-Dark","银伴战兽-恶");
@@ -985,6 +987,8 @@ public class Translations {
         pokemonDict.put("Kartana","纸御剑");
         pokemonDict.put("Guzzlord","恶食大王");
         pokemonDict.put("Necrozma","奈克洛兹玛");
+        pokemonDict.put("Necrozma-Dusk-Mane","奈克洛兹玛-黄昏之鬃");
+        pokemonDict.put("Necrozma-Dawn-Wings","奈克洛兹玛-拂晓之翼");
         pokemonDict.put("Magearna","玛机雅娜");
         pokemonDict.put("Magearna-Original","玛机雅娜");
         pokemonDict.put("Marshadow","玛夏多");

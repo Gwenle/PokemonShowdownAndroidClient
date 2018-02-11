@@ -1,5 +1,6 @@
 [![Build Status](https://travis-ci.org/Balachandarsmr/PokemonShowdownAndroidClient.svg?branch=master)](https://travis-ci.org/Balachandarsmr/PokemonShowdownAndroidClient)
-
+更新记录
+2018.2.11:支持中文搜索宝可梦、技能与道具的功能
 Protocol
 ========
 

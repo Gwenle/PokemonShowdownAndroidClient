@@ -28,6 +28,7 @@ import java.util.HashMap;
 
 import static com.pokemonshowdown.data.Translations.translateAbility;
 import static com.pokemonshowdown.data.Translations.translateMove;
+import static com.pokemonshowdown.data.Translations.translatePokemon;
 
 public class SearchableActivity extends ListActivity {
     public final static String STAG = SearchableActivity.class.getName();
@@ -142,7 +143,7 @@ public class SearchableActivity extends ListActivity {
     protected void onNewIntent(Intent intent) {
         setIntent(intent);
         if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
-            String query = MyApplication.toId(intent.getStringExtra(SearchManager.QUERY));
+            String query = intent.getStringExtra(SearchManager.QUERY);
             switch (mSearchType) {
                 case REQUEST_CODE_SEARCH_POKEMON:
                     searchPokemon(query);
@@ -187,8 +188,13 @@ public class SearchableActivity extends ListActivity {
         HashMap<String, String> pokedex = Pokedex.get(getApplicationContext()).getPokedexEntries();
         mAdapterList = new ArrayList<>();
         for (String pokemonName : pokedex.keySet()) {
-            if (pokemonName.contains(query.toLowerCase())) {
-                mAdapterList.add(pokemonName);
+            //Log.e("Pokemon name",pokemonName);
+            try {
+                if (pokemonName.contains(query.toLowerCase())||translatePokemon(Pokedex.get(getApplicationContext()).getPokemonJSONObject(pokemonName).get("species").toString()).contains(query)) {
+                    mAdapterList.add(pokemonName);
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
             }
         }
         mAdapter = new PokemonAdapter(this, mAdapterList);
@@ -199,8 +205,12 @@ public class SearchableActivity extends ListActivity {
         HashMap<String, String> abilityDex = AbilityDex.get(getApplicationContext()).getAbilityDexEntries();
         mAdapterList = new ArrayList<>();
         for (String abilityName : abilityDex.keySet()) {
-            if (abilityName.contains(query.toLowerCase())) {
-                mAdapterList.add(abilityName);
+            try {
+                if (abilityName.contains(query.toLowerCase())||translateAbility(AbilityDex.get(getApplicationContext()).getAbilityJsonObject(abilityName).get("name").toString()).contains(query)) {
+                    mAdapterList.add(abilityName);
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
             }
         }
         mAdapter = new AbilityAdapter(this, mAdapterList);
@@ -211,8 +221,12 @@ public class SearchableActivity extends ListActivity {
         HashMap<String, String> itemDex = ItemDex.get(getApplicationContext()).getItemDexEntries();
         mAdapterList = new ArrayList<>();
         for (String itemName : itemDex.keySet()) {
-            if (itemName.contains(query.toLowerCase())) {
-                mAdapterList.add(itemName);
+            try {
+                if (itemName.contains(query.toLowerCase())||translateAbility(ItemDex.get(getApplicationContext()).getItemJsonObject(itemName).get("name").toString()).contains(query)) {
+                    mAdapterList.add(itemName);
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
             }
         }
         mAdapter = new ItemAdapter(this, mAdapterList);
@@ -223,8 +237,12 @@ public class SearchableActivity extends ListActivity {
         HashMap<String, String> moveDex = MoveDex.get(getApplicationContext()).getMoveDexEntries();
         mAdapterList = new ArrayList<>();
         for (String moveName : moveDex.keySet()) {
-            if (moveName.contains(query.toLowerCase())) {
-                mAdapterList.add(moveName);
+            try {
+                if (moveName.contains(query.toLowerCase())||translateMove(MoveDex.get(getApplicationContext()).getMoveJsonObject(moveName).get("name").toString()).contains(query)) {
+                    mAdapterList.add(moveName);
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
             }
         }
         mAdapter = new MovesAdapter(this, mAdapterList);
@@ -314,7 +332,10 @@ public class SearchableActivity extends ListActivity {
                 else
                     textView.setText(abilityJson.getString("name"));
                 textView.setCompoundDrawablesWithIntrinsicBounds(Pokedex.getUnownIcon(getApplicationContext(), abilityName), 0, 0, 0);
-                ((TextView) convertView.findViewById(R.id.short_ability_description)).setText(abilityJson.getString("shortDesc"));
+                if(Onboarding.get(mContext).isChineseEnable())
+                    ((TextView) convertView.findViewById(R.id.short_ability_description)).setText(abilityJson.getString("zhDesc"));
+                else
+                    ((TextView) convertView.findViewById(R.id.short_ability_description)).setText(abilityJson.getString("shortDesc"));
             } catch (JSONException e) {
                 Log.d(STAG, e.toString());
             }
